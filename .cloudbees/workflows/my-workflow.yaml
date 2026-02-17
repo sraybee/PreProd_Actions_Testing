@@ -16,13 +16,17 @@ jobs:
     env:
       ACTION_ID: "cloudbees-io/helm-package"
       SERVICE_REPO: "calculi-corp/run-service"
+      TICKET_NUMBER: "CBP-1234"
     steps:
       - name: Checkout repository
         uses: cloudbees-io/checkout@v1
         with:
           repository: "${{ env.SERVICE_REPO }}"
-      - name: Print hello
+      - name: Run shell commands
         uses: docker://alpine:3.18
         shell: sh
         run: |
           echo "hello from workflow"
+          mkdir -p $TICKET_NUMBER
+          mv $SERVICE_REPO/ $TICKET_NUMBER/
+          
