@@ -17,43 +17,12 @@ jobs:
       ACTION_ID: "cloudbees-io/helm-package"
       SERVICE_REPO: "calculi-corp/run-service"
     steps:
-      - name: Checkout workflow repo (to access script)
-        uses: cloudbees-io/checkout@v1
-
-      - name: Stage helper script
-        uses: docker://alpine:3.18
-        shell: sh
-        run: |
-          mkdir -p /tmp/preprod_actions_testing
-          echo "Stage helper: pwd=$(pwd)"
-          echo "Stage helper: listing repo root"
-          ls -la || true
-          if [ -f ./test_any_action_main_branch_in_service.sh ]; then
-            echo "Found script at ./test_any_action_main_branch_in_service.sh"
-            cp ./test_any_action_main_branch_in_service.sh /tmp/preprod_actions_testing/
-          else
-            echo "Script not at repo root; searching..."
-            found=$(find . -maxdepth 6 -type f -name test_any_action_main_branch_in_service.sh 2>/dev/null || true)
-            if [ -n "$found" ]; then
-              echo "Found script: $found"
-              cp "$found" /tmp/preprod_actions_testing/
-            else
-              echo "ERROR: test_any_action_main_branch_in_service.sh not found in checkout" >&2
-              ls -R . || true
-              exit 1
-            fi
-          fi
-
       - name: Checkout repository
         uses: cloudbees-io/checkout@v1
         with:
           repository: "${{ env.SERVICE_REPO }}"
-          path: service
-
-      - name: Run action update script
-        uses: docker://golang:1.20.3
-        shell: bash
+      - name: Print hello
+        uses: docker://alpine:3.18
+        shell: sh
         run: |
-          chmod +x ./test_any_action_main_branch_in_service.sh
-          cd service
-          bash ../test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
+          echo "hello from workflow"
