@@ -10,7 +10,7 @@ jobs:
   build:
     steps:
       - name: Checkout repository
-        uses: cloudbees-io/checkout@v1
+        uses: cloudbees-io/checkout@v2
         with:
           repository: "calculi-corp/run-service"
 
