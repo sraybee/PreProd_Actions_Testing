@@ -17,6 +17,16 @@ jobs:
       ACTION_ID: "cloudbees-io/helm-package"
       SERVICE_REPO: "calculi-corp/run-service"
     steps:
+      - name: Checkout workflow repo (to access script)
+        uses: cloudbees-io/checkout@v1
+
+      - name: Stage helper script
+        uses: docker://alpine:3.18
+        shell: sh
+        run: |
+          mkdir -p /tmp/preprod_actions_testing
+          cp test_any_action_main_branch_in_service.sh /tmp/preprod_actions_testing/
+
       - name: Checkout repository
         uses: cloudbees-io/checkout@v1
         with:
@@ -26,5 +36,5 @@ jobs:
         uses: docker://golang:1.20.3
         shell: bash
         run: |
-          chmod +x ./test_any_action_main_branch_in_service.sh
-          ./test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
+          chmod +x /tmp/preprod_actions_testing/test_any_action_main_branch_in_service.sh
+          /tmp/preprod_actions_testing/test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
