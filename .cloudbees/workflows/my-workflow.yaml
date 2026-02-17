@@ -48,10 +48,12 @@ jobs:
         uses: cloudbees-io/checkout@v1
         with:
           repository: "${{ env.SERVICE_REPO }}"
+          path: service
 
       - name: Run action update script
         uses: docker://golang:1.20.3
         shell: bash
         run: |
-          chmod +x /tmp/preprod_actions_testing/test_any_action_main_branch_in_service.sh
-          /tmp/preprod_actions_testing/test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
+          chmod +x ./test_any_action_main_branch_in_service.sh
+          cd service
+          bash ../test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
