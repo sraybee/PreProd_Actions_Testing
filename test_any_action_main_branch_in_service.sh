@@ -43,9 +43,20 @@ BRANCH="${SANITIZED_TICKET}_Test_${ACTION_NAME}_${TIMESTAMP}"
 
 mkdir -p "$FOLDER" && cd "$FOLDER"
 
-echo "Cloning service: $SERVICE_URL"
-git clone "$SERVICE_URL"
-REPO_DIR=$(basename "$SERVICE_URL" .git)
+# Derive clone URL: prefer SSH so CI git credentials work (git@github.com:owner/repo.git)
+if [[ "$SERVICE_URL" =~ ^https?://github.com/([^/]+/[^/]+)(\.git)?$ ]]; then
+  OWNER_REPO="${BASH_REMATCH[1]}"
+  CLONE_URL="git@github.com:${OWNER_REPO}.git"
+elif [[ "$SERVICE_URL" =~ ^([^/]+/[^/]+)$ ]]; then
+  OWNER_REPO="$SERVICE_URL"
+  CLONE_URL="git@github.com:${OWNER_REPO}.git"
+else
+  CLONE_URL="$SERVICE_URL"
+fi
+
+echo "Cloning service: $CLONE_URL"
+git clone "$CLONE_URL"
+REPO_DIR=$(basename "$CLONE_URL" .git)
 cd "$REPO_DIR"
 
 echo "Creating branch: $BRANCH"
