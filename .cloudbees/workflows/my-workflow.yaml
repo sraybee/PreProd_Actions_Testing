@@ -13,15 +13,18 @@ permissions:
 
 jobs:
   build:
+    env:
+      ACTION_ID: "cloudbees-io/helm-package"
+      SERVICE_REPO: "calculi-corp/run-service"
     steps:
       - name: Checkout repository
         uses: cloudbees-io/checkout@v1
         with:
-          repository: "calculi-corp/run-service"
+          repository: "${{ env.SERVICE_REPO }}"
 
-      - name: Say hello
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
+      - name: Run action update script
+        uses: docker://golang:1.20.3
+        shell: bash
         run: |
-          echo "hello world"
-          echo ls -l
+          chmod +x ./test_any_action_main_branch_in_service.sh
+          ./test_any_action_main_branch_in_service.sh -a "$ACTION_ID"
