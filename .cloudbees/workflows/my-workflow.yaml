@@ -27,6 +27,24 @@ jobs:
         shell: sh
         run: |
           echo "hello from workflow"
-          mkdir -p $TICKET_NUMBER
-          mv $SERVICE_REPO/ $TICKET_NUMBER/
+          set -eu
+          mkdir -p "$TICKET_NUMBER"
+
+          # Determine service directory. If checkout used 'path', set CHECKOUT_PATH env accordingly.
+          SERVICE_DIR="${CHECKOUT_PATH:-$(basename "$SERVICE_REPO")}";
+
+          # If the computed dir doesn't exist, try to find the checked-out repo directory.
+          if [ ! -d "$SERVICE_DIR" ]; then
+            echo "Service dir '$SERVICE_DIR' not found; searching for repo dir..."
+            SERVICE_DIR=$(find . -maxdepth 3 -type d -name "$(basename "$SERVICE_REPO")" -print -quit || true)
+          fi
+
+          if [ -z "$SERVICE_DIR" ] || [ ! -d "$SERVICE_DIR" ]; then
+            echo "ERROR: service checkout directory not found for '$SERVICE_REPO'" >&2
+            ls -la || true
+            exit 1
+          fi
+
+          echo "Moving '$SERVICE_DIR' to '$TICKET_NUMBER/'"
+          mv "$SERVICE_DIR" "$TICKET_NUMBER/"
           
