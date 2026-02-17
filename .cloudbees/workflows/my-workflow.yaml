@@ -27,5 +27,5 @@ jobs:
         uses: docker://alpine:3.18
         shell: sh
         run: |
-          ls -la | grep $SERVICE_REPO || true
+          ls -la | grep $SERVICE_REPO
           echo "hello from workflow"
