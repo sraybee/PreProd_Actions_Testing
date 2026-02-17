@@ -17,6 +17,7 @@ jobs:
       ACTION_ID: "cloudbees-io/helm-package"
       SERVICE_REPO: "calculi-corp/run-service"
       TICKET_NUMBER: "CBP-1234"
+      CHECKOUT_PATH: "service"
     steps:
       - name: Checkout repository
         uses: cloudbees-io/checkout@v1
@@ -28,7 +29,7 @@ jobs:
         shell: sh
         run: |
           set -eu
-          SERVICE_DIR=$(basename "$SERVICE_REPO")
+          SERVICE_DIR="${CHECKOUT_PATH:-$(basename "$SERVICE_REPO")}" 
           echo "Looking for checked-out directory: $SERVICE_DIR"
           if [ -d "$SERVICE_DIR" ]; then
             ls -la "$SERVICE_DIR"
