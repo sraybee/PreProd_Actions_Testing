@@ -15,7 +15,7 @@ jobs:
           repository: "calculi-corp/run-service"
 
       - name: Configure git credentials
-        uses: cloudbees-io/configure-git-global-credentials@v1
+        uses: cloudbees-io/configure-git-global-credentials@v2
 
       - name: Say hello
         uses: docker://golang:1.20.3-alpine3.17
