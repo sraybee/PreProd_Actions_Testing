@@ -27,5 +27,13 @@ jobs:
         uses: docker://alpine:3.18
         shell: sh
         run: |
-          ls -la | grep $SERVICE_REPO
+          set -eu
+          SERVICE_DIR=$(basename "$SERVICE_REPO")
+          echo "Looking for checked-out directory: $SERVICE_DIR"
+          if [ -d "$SERVICE_DIR" ]; then
+            ls -la "$SERVICE_DIR"
+          else
+            echo "Service directory '$SERVICE_DIR' not found; listing workspace:" >&2
+            ls -la
+          fi
           echo "hello from workflow"
