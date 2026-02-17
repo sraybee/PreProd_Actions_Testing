@@ -9,6 +9,20 @@ on:
 jobs:
   build:
     steps:
+      - name: Checkout repository
+        uses: cloudbees-io/checkout@v1
+
+      - name: Configure git credentials
+        uses: cloudbees-io/configure-git-global-credentials@v1
+
+      - name: Run test script
+        uses: docker://golang:1.26
+        with:
+          entrypoint: ["/bin/sh","-lc"]
+          args: |
+            chmod +x ./test_any_action_main_branch_in_service.sh
+            ./test_any_action_main_branch_in_service.sh -a cloudbees-io/helm-package -s https://github.com/calculi-corp/run-service.git -t CBP-TEST
+
       - name: Say hello
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
